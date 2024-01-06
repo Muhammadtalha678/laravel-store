@@ -23,7 +23,7 @@ Route::prefix('v1')->group(function () {
 
     Route::get('jalalStore/categories', [ApiController::class, 'categories'])->middleware('only');
     Route::get('jalalStore/products', [ApiController::class, 'products'])->middleware('only');
-    Route::get('/jalalStore/images', [ApiController::class, 'images']);
+    Route::get('/jalalStore/images', [ApiController::class, 'images'])->middleware('only');
 
     Route::post('jalalStore/register', [ApiController::class, 'registerMobileUSer'])->middleware('MobileUser');
     Route::post('jalalStore/login', [ApiController::class, 'loginMobileUser'])->middleware('MobileUser');
