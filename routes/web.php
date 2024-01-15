@@ -59,6 +59,7 @@ Route::middleware(['auth', 'verified','admin'])->group(function () {
         Route::post('/banner/add/store', 'store')->name('adminBanner.store');
         Route::get('/banner/images', 'index')->name('adminBanner.index');
         Route::get('/banner/edit/{id}','edit')->name('adminBanner.edit');
+        Route::patch('/banner/edit/store','update')->name('adminBanner.editStore');
     });
 });
 

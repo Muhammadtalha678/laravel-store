@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Banner;
+use Exception;
+use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
+use Crypt;
 
 class BannerController extends Controller
 {
@@ -58,7 +61,7 @@ class BannerController extends Controller
         if ($request->hasFile('slider_images')) {
             foreach ($request->file('slider_images') as $value) {
                 $sliderName = time() . rand(1, 100) . '.' . $value->extension();
-                $value->move(public_path('sliderImage'), $sliderName);
+                $value->move(public_path('sliderImages'), $sliderName);
                 $appUrl = config('app.url');
                 // $appUrl = env('APP_URL');
                 $sliderFileName[] = $appUrl . 'sliderImages/' . $sliderName;
@@ -73,10 +76,84 @@ class BannerController extends Controller
             'banner_image' => $bannerImage,
             'slider_images' => $sliderImages,
         ]);
-        return redirect()->route('adminBanner.add')->with('success', 'Images Added Successfully');
+        return redirect()->route('adminBanner.index')->with('success', 'Images Added Successfully');
     }
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
-        echo $id;
+        try {
+            $decrypted = Crypt::decrypt($id);
+            $findData = Banner::findOrfail($decrypted);
+            return view('admin.banner.edit', compact('findData'));
+        } catch (DecryptException $e) {
+            return back()->with('error', $e->getMessage());
+        }
+    }
+    public function update(Request $request)
+    {
+        try {
+            $decrypted = Crypt::decrypt($request->id);
+            $findBanner = Banner::findorFail($decrypted);
+            $bannerImage = $findBanner->banner_image;
+            $sliderImage = $findBanner->slider_images;
+            if ($findBanner) {
+                if ($request->has('banner_image')) {
+                    $rules = [
+                        'banner_image' => 'mimes:jpg,jpeg,png|max:2048'
+                    ];
+                    $message = [
+                        'banner_image.max' => 'Banner Image should not be greater than 2mb Image'
+                    ];
+                    $request->validate($rules, $message);
+
+
+                }
+                if ($request->has('slider_images')) {
+                    $rules = [
+                        'slider_images' => 'array|min:4',
+                    ];
+                    $message = [
+                        'slider_images.min' => 'At least four images are required'
+                    ];
+                    foreach ($request->slider_images as $key => $value) {
+                        $rules['slider_images.' . $key] = 'mimes:jpg,jpeg,png|max:2048';
+                        $message['slider_images.' . $key . '.max'] = 'Slider Image ' . ($key + 1) . ' must be not greater than 2 mb.';
+                        $message['slider_images.' . $key . '.mimes'] = 'Slider Image ' . ($key + 1) . ' must be a file of type: jpeg,png,jpg.';
+                    }
+                    $request->validate($rules, $message);
+                }
+                if ($request->hasFile('banner_image')) {
+                    $bannerName = time() . rand(1, 100) . '.' . $request->banner_image->extension();
+                    $request->banner_image->move(public_path('bannerImage'), $bannerName);
+                    $bannerImage = config('app.url') . 'bannerImage/' . $bannerName;
+                    $localPath = str_replace('/', '\\', str_replace(config('app.url'), '', $findBanner->banner_image));
+                    unlink(public_path($localPath));
+                    // echo public_path($localPath);
+                    // echo $bannerImage;
+                    // exit;
+                }
+                if ($request->hasFile('slider_images')) {
+                    foreach ($request->file('slider_images') as $value) {
+                        $sliderName = time() . rand(1, 100) . '.' . $value->extension();
+                        $value->move(public_path('sliderImages'), $sliderName);
+                        $sliderImages[] = config('app.url') . 'sliderImages/' . $sliderName;
+                    }
+                    $sliderImage = json_encode($sliderImages);
+                    foreach (json_decode($findBanner->slider_images) as $value) {
+                        $localPath = str_replace('/', '\\', str_replace(config('app.url'), '', $value));
+                        unlink(public_path($localPath));
+                    }
+                }
+                // echo $sliderImage;
+                // echo $bannerImage;
+                // exit;
+                $findBanner->fill([
+                    'banner_image' => $bannerImage,
+                    'slider_images' => $sliderImage,
+                ])->save();
+                return redirect()->route('adminBanner.index')->with('success', 'Images Updated Successfully');
+            }
+        } catch (DecryptException $e) {
+            return back()->with('error', $e->getMessage());
+        }
     }
 }

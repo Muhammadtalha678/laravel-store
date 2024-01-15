@@ -115,7 +115,7 @@
                            <li>
                               <a><i class="fa fa-image"></i> Banner Images <span class="fa fa-chevron-down"></span></a>
                               <ul class="nav child_menu">
-                                 @if (App\Models\Banner::all() != null)
+                                 @if (App\Models\Banner::all()->count() > 0)
 
                                  <li>Already Add Images</li>
                                  @else

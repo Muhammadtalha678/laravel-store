@@ -25,7 +25,7 @@
                     <ul class="nav navbar-right panel_toolbox">
                         <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                         </li>
-                        @if ($images != null)
+                        @if ($images->count() > 0)
                             <p style="margin-top: 10px">Already Add Images</p>
                         @else
                         <a type="button" class="btn btn-primary" href="{{route('adminBanner.add')}}">Add Images</a>
@@ -35,12 +35,12 @@
             <div class="clearfix"></div>
           </div>
           @if (session('success'))
-                    <div  id="errorMessage" class="error  " style="color: green ; font-size: 16px">
+                    <div  id="errorMessage" class="alert alert-success text-center" style="color:white ; font-size: 16px">
                         {{ session('success') }}
                     </div>
                     @endif
                     @if (session('error'))
-                    <div  id="errorMessage" class="error  " style="color: red ; font-size: 16px">
+                    <div  id="errorMessage" class="alert alert-danger text-center" style="color: white ; font-size: 16px">
                         {{ session('error') }}
                     </div>
                     @endif
@@ -88,7 +88,7 @@
                       @php
                             $idencrypt = Crypt::encrypt($image->id);
                             @endphp
-                        <a type="button" class="btn btn-primary" href="{{route('adminBanner.edit',['id' => $idencrypt])}}">Edit Category</a>
+                        <a type="button" class="btn btn-primary" href="{{route('adminBanner.edit',['id' => $idencrypt])}}">Edit Images</a>
                           {{-- <form action="{{route('adminCategory.delete',['id' => $idencrypt])}}" method="POST">
                             @csrf
                             @method('delete')

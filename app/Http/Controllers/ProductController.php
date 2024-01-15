@@ -255,7 +255,7 @@ class ProductController extends Controller
                 }
             }
             if ($request->hasFile('thumbnail')) {
-                echo
+                // echo
                     $thumbnailName = time() . rand(1, 100) . '.' . $request->thumbnail->extension();
                 $request->thumbnail->move(public_path('productThumbnail'), $thumbnailName);
                 $UpdateThumbnail = url(config('app.url') . 'productThumbnail/' . $thumbnailName);
@@ -281,7 +281,7 @@ class ProductController extends Controller
             // Somewhere in your controller or service
 
             // var_dump($ee);exit;
-//             return back()->with('success',"Product Edit Successfully");
+            return back()->with('success',"Product Edit Successfully");
         } else {
             return back()->with('error', "Product not Found");
         }
