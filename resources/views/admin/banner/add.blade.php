@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 @section('title')
-    Banner Images
+    Add Banner Images
 @endsection
 @section('main-content')
     <div class="">

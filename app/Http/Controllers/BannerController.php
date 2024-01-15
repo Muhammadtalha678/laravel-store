@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 
 class BannerController extends Controller
 {
+    public function index()
+    {
+        $images = Banner::all();
+        return view('admin.banner.index', compact('images'));
+    }
     public function add()
     {
         return view('admin.banner.add');
@@ -60,7 +65,8 @@ class BannerController extends Controller
                 // echo $value;
             }
 
-            $sliderImages = json_encode($sliderFileName);
+            $sliderImages = json_encode
+            ($sliderFileName);
             // print_r($sliderImages);
         }
         Banner::create([
@@ -68,5 +74,9 @@ class BannerController extends Controller
             'slider_images' => $sliderImages,
         ]);
         return redirect()->route('adminBanner.add')->with('success', 'Images Added Successfully');
+    }
+    public function edit($id)
+    {
+        echo $id;
     }
 }

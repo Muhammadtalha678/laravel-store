@@ -13,7 +13,7 @@ use Session;
 class ProductController extends Controller
 {
 
-    function index()
+    public function index()
     {
         if (Session::has("productSearch")) {
             $productSearch = Session::get("productSearch");

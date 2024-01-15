@@ -53,10 +53,12 @@ Route::middleware(['auth', 'verified','admin'])->group(function () {
         
         Route::post('/clear-search-session/product', 'clearSearchSession')->name('clearSearchSession.Product');//clear session with F5
     });
-    //this is for Admin Product
+    //this is for Admin Banner Images 
     Route::controller(BannerController::class)->prefix('admin')->group(function () {
         Route::get('/banner/add', 'add')->name('adminBanner.add');
         Route::post('/banner/add/store', 'store')->name('adminBanner.store');
+        Route::get('/banner/images', 'index')->name('adminBanner.index');
+        Route::get('/banner/edit/{id}','edit')->name('adminBanner.edit');
     });
 });
 

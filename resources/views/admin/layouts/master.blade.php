@@ -113,10 +113,15 @@
                               </ul>
                            </li>
                            <li>
-                              <a><i class="fa fa-product-hunt"></i> Banner Images <span class="fa fa-chevron-down"></span></a>
+                              <a><i class="fa fa-image"></i> Banner Images <span class="fa fa-chevron-down"></span></a>
                               <ul class="nav child_menu">
+                                 @if (App\Models\Banner::all() != null)
+
+                                 <li>Already Add Images</li>
+                                 @else
                                  <li><a href="{{route('adminBanner.add')}}">Add Images</a></li>
-                                 <li><a href="">Banner</a></li>
+                                 @endif
+                                 <li><a href="{{route('adminBanner.index')}}">Banner</a></li>
                                  
                               </ul>
                            </li>
